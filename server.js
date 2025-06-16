@@ -2,17 +2,15 @@ const express = require('express');
 const app = express();
 const notesRouter = require('./routes/notes');
 
-app.use(express.json());
+app.use(express.json()); // middleware to parse JSON
 
-// All routes starting with /api/notes go to notesRouter
+// Use notes router for /api/notes
 app.use('/api/notes', notesRouter);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+app.get('/', (req, res) => {
+  res.send('🎉 Notes API is working!');
 });
 
-// Start server
 app.listen(3000, () => {
-  console.log('🚀 Server running at http://localhost:3000');
+  console.log('🚀 Server is running at http://localhost:3000');
 });
