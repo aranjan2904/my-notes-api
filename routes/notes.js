@@ -39,3 +39,37 @@ router.get('/', (req, res) => {
 });
 
 module.exports = router;
+
+
+// POST new note
+router.post('/', (req, res) => {
+  const { title, content } = req.body;
+
+  if (!title || !content) {
+    return res.status(400).json({ message: 'Title and content are required' });
+  }
+
+  fs.readFile('notes.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error reading notes data' });
+    }
+
+    const notes = JSON.parse(data);
+    const newNote = {
+      id: notes.length ? notes[notes.length - 1].id + 1 : 1,
+      title,
+      content
+    };
+
+    notes.push(newNote);
+
+    fs.writeFile('notes.json', JSON.stringify(notes, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error saving note' });
+      }
+
+      res.status(201).json(newNote);
+    });
+  });
+});
+
